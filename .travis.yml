@@ -1,6 +1,6 @@
-language: cpp
-os:
-    - osx
+osx_image: xcode61
+
+language: objective-c
 
 compiler:
   - clang
