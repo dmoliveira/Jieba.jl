@@ -1,48 +1,22 @@
 environment:
-#  USEMSVC: "1"
   matrix:
-  - ARCH: "i686"
-  - ARCH: "x86_64"
-    JULIA_CPU_CORES: 1
-# Run win64 tests in serial for now to avoid #7942 causing timeouts
+  - JULIAVERSION: "win32"
+  - JULIAVERSION: "win64"
 
-# Only build on master and PR's for now, not personal branches
-# Whether or not PR's get built is determined in the webhook settings
-branches:
-  only:
-    - master
-    - release-0.3
-
-notifications:
-  - provider: Email
-    on_build_success: false
-    on_build_failure: false
-    on_build_status_changed: false
-
-clone_depth: 50
-
-init:
-# Carriage returns are bad
-  - git config --global core.autocrlf input
-
-cache:
-# Cache any downloads from sourceforge because it's really unreliable
-  - mingw-w32-bin-i686-20140102.7z
-  - mingw-w64-bin-x86_64-20140102.7z
-  - llvm-3.3-i686-w64-mingw32-juliadeps.7z
-  - llvm-3.3-x86_64-w64-mingw32-juliadeps.7z
-  - make-3.81-2-msys-1.0.11-bin.tar.lzma
-  - jq.exe
+install:
+# Download most recent Julia Windows binary
+  - ps: (new-object net.webclient).DownloadFile($("http://status.julialang.org/download/"+$env:JULIAVERSION), "C:\projects\julia-binary.exe")
+# Run installer silently, output to C:\projects\julia
+  - C:\projects\julia-binary.exe /S /D=C:\projects\julia
+  - curl http://liquidtelecom.dl.sourceforge.net/project/mingwbuilds/host-windows/releases/4.8.1/32-bit/threads-win32/sjlj/x32-4.8.1-release-win32-sjlj-rev5.7z > "c:\xx.zip"
+  - cd c:\
+  - unzip -q xx.zip
+  - cp c:\mingw32\bin\mingw32-make.exe c:\mingw32\bin\make.exe
+  - set PATH=%PATH:C:\mingw32\bin;=%
 
 build_script:
-# Remove C:\MinGW\bin from the path, the version of MinGW installed on
-# AppVeyor is not compatible with the cross-compiled Julia Windows binaries
-  - curl https://codeload.github.com/JuliaLang/julia/zip/master > julia.zip
-  - unzip -p julia.zip
-  - set PATH=%PATH:C:\MinGW\bin;=%
-#  - '"%VS120COMNTOOLS%\..\..\VC\vcvarsall.bat" x86_amd64'
-# Since the AppVeyor VMs have Git installed, they have MSYS1
-  - sh --login ./julia-master/contrib/windows/msys_build.sh
+# Need to convert from shallow to complete for Pkg.clone to work
+  - IF EXIST .git\shallow (git fetch --unshallow)
 
 test_script:
-  - usr\bin\julia -e 'Pkg.init(); Pkg.clone("C:\projects\jieba-jl"); Pkg.build("Jieba");Pkg.test("Jieba")'
+  - C:\projects\julia\bin\julia -e 'Pkg.init(); Pkg.clone("C:\projects\jieba-jl"); Pkg.build("Jieba");Pkg.test("Jieba")'
