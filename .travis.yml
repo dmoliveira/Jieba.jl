@@ -19,7 +19,7 @@ before_install:
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
   - sudo apt-get -qq update
   - sudo apt-get remove gcc 
-  - sudo apt-get -qq install g++-4.9
+  - sudo apt-get -qq install gcc
   - gcc --version
   - sudo add-apt-repository ppa:staticfloat/julia-deps -y
   - sudo add-apt-repository ppa:staticfloat/${JULIAVERSION} -y
