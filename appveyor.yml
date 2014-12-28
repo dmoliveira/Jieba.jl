@@ -8,7 +8,7 @@ install:
   - ps: (new-object net.webclient).DownloadFile($("http://status.julialang.org/download/"+$env:JULIAVERSION), "C:\projects\julia-binary.exe")
 # Run installer silently, output to C:\projects\julia
   - C:\projects\julia-binary.exe /S /D=C:\projects\julia
-  - ps: (new-object net.webclient).DownloadFile("http://liquidtelecom.dl.sourceforge.net/project/mingwbuilds/host-windows/releases/4.8.1/32-bit/threads-win32/sjlj/x32-4.8.1-release-win32-sjlj-rev5.7z"), "c:/xx.7z")
+  - ps: (new-object net.webclient).DownloadFile("http://liquidtelecom.dl.sourceforge.net/project/mingwbuilds/host-windows/releases/4.8.1/32-bit/threads-win32/sjlj/x32-4.8.1-release-win32-sjlj-rev5.7z", "c:/xx.7z")
   - cd c:\
   - 7z x xx.7z
   - cp c:\mingw32\bin\mingw32-make.exe c:\mingw32\bin\make.exe
