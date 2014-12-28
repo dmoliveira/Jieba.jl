@@ -2,6 +2,10 @@
 
 [![Build Status](https://travis-ci.org/qinwf/Jieba.jl.svg)](https://travis-ci.org/qinwf/Jieba.jl)
 
+This is a package for Chinese text segmentation, keyword extraction 
+and speech tagging. It also shows how to use C++ library in Julia without other packages.
+
+
 ["结巴"中文分词]的 Julia 版本，支持最大概率法（Maximum Probability），隐式马尔科夫模型（Hidden Markov Model），索引模型（QuerySegment），混合模型（MixSegment），共四种分词模式，同时有词性标注，关键词提取，文本Simhash相似度比较等功能。项目使用了[CppJieba]进行开发。
 
 Jieba.jl 的使用方法与 jiebaR 类似，如果你熟悉 jiebaR，应该可以很快上手。Jieba.jl 和 jiebaR 的分词速度是相近的，它们底层调用的都是 CppJieba。
