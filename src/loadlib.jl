@@ -5,7 +5,7 @@ export USERPATH
 export libdemo 
 
 fnames = ["libdemo.so", "libdemo.dylib", "libdemo.dll"]
-paths = [pwd(), joinpath(Pkg.dir(), "jieba", "deps")]
+paths = [pwd(), joinpath(Pkg.dir(), "Jieba", "deps")]
 global libname
 found = false
 for path in paths
