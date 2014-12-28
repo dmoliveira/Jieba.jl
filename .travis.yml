@@ -1,8 +1,12 @@
 language: cpp
 
+os:
+    - linux
+    - osx
+
 compiler:
   - clang
-  - gcc
+  - gcc-4.8
 
 notifications:
   email: change
