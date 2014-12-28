@@ -37,11 +37,12 @@ cache:
 build_script:
 # Remove C:\MinGW\bin from the path, the version of MinGW installed on
 # AppVeyor is not compatible with the cross-compiled Julia Windows binaries
-  - git clone https://github.com/JuliaLang/julia.gits
+  - curl https://codeload.github.com/JuliaLang/julia/zip/master > julia.zip
+  - unzip -p julia.zip
   - set PATH=%PATH:C:\MinGW\bin;=%
 #  - '"%VS120COMNTOOLS%\..\..\VC\vcvarsall.bat" x86_amd64'
 # Since the AppVeyor VMs have Git installed, they have MSYS1
-  - sh --login ./julia/contrib/windows/msys_build.sh
+  - sh --login ./julia-master/contrib/windows/msys_build.sh
 
 test_script:
-  - usr\bin\julia -e 'Pkg.init(); Pkg.clone(pwd()); Pkg.build("Jieba");Pkg.test("Jieba")'
+  - usr\bin\julia -e 'Pkg.init(); Pkg.clone("C:\projects\jieba-jl"); Pkg.build("Jieba");Pkg.test("Jieba")'
