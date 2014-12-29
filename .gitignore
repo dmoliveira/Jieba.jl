@@ -2,3 +2,5 @@
 *.a
 *.o
 testit.jl
+*.dll
+Makefile.test
