@@ -12,7 +12,8 @@ install:
   - cd c:\
   - 7z x xx.7z > 7zlog.log
   - cp c:\mingw32\bin\mingw32-make.exe c:\mingw32\bin\make.exe
-  - set PATH=%PATH:C:\mingw32\bin;=%
+  - set PATH += C:\mingw32\bin
+  - make -v
   - move C:\projects\jieba-jl C:\projects\Jieba
 
 build_script:

@@ -124,7 +124,7 @@ cutter.encoding
 测试引擎.编码
 
 cutter.detect = false
-测试引擎.保留编码 = false
+测试引擎.保留符号 = false
 ```
 
 可以自定义用户词库，推荐使用[深蓝词库转换]构建分词词库，它可以快速地将搜狗细胞词库等输入法词库转换为 Jieba.jl 的词库格式。
