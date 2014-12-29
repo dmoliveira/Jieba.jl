@@ -1,6 +1,10 @@
 # Jieba.jl
 
-[![Build Status](https://travis-ci.org/qinwf/Jieba.jl.svg)](https://travis-ci.org/qinwf/Jieba.jl)
+Linux : [![Build Status](https://travis-ci.org/qinwf/jiebaR.svg?branch=master)](https://travis-ci.org/qinwf/jiebaR)　Mac : [![Build Status](https://travis-ci.org/qinwf/Jieba.jl.svg?branch=osx)](https://travis-ci.org/qinwf/Jieba.jl)　Windows : [![Build status](https://ci.appveyor.com/api/projects/status/4bqwdhxp91a18k4t/branch/master?svg=true)](https://ci.appveyor.com/project/qinwf/jieba-jl/branch/master)
+
+This is a package for Chinese text segmentation, keyword extraction 
+and speech tagging. It also shows how to use C++ library in Julia without other packages.
+
 
 ["结巴"中文分词]的 Julia 版本，支持最大概率法（Maximum Probability），隐式马尔科夫模型（Hidden Markov Model），索引模型（QuerySegment），混合模型（MixSegment），共四种分词模式，同时有词性标注，关键词提取，文本Simhash相似度比较等功能。项目使用了[CppJieba]进行开发。
 
@@ -10,7 +14,7 @@ Jieba.jl 的使用方法与 jiebaR 类似，如果你熟悉 jiebaR，应该可�
 
 ## 特性
 
-+ 支持 Linux。Windows 和 Mac 操作系统暂未测试。
++ 支持 Linux，Mac，Windows 操作系统。
 + 支持多种分词模式、中文姓名识别、关键词提取、词性标注以及文本Simhash相似度比较等功能。
 + 支持加载自定义用户词库，设置词频、词性。
 + 同时支持简体中文、繁体中文分词。
@@ -20,7 +24,7 @@ Jieba.jl 的使用方法与 jiebaR 类似，如果你熟悉 jiebaR，应该可�
 
 ## 安装
 
-可以通过Github安装,系统需要安装 gcc >= 4.6 编译包：
+可以通过Github安装,系统需要安装 gcc >= 4.6 或 Clang 编译包。在Windows 下请不要使用 Rtools 下的 MinGW，请使用 JuliaLang 官方推荐的 MinGW 版本：
 
 ```julia
 Pkg.clone("git://github.com/qinwf/Jieba.jl.git")
@@ -33,19 +37,21 @@ using Jieba
 
 ### 分词
 
-Julia.jl 提供了四种分词模式，可以通过`worker()`来初始化分词引擎，使用`segment()`进行分词。
+Julia.jl 提供了四种分词模式，可以通过`worker()` `初始化分词()` 来初始化分词引擎，使用`segment()` `分词()`进行分词。
 
 ```julia
 using Jieba
 
 ##  接受默认参数，建立分词引擎
-cutter = worker()
+
+测试引擎 = 初始化分词()
+#cutter = worker()
 
 ##  相当于：
-##       worker( "mix",
-##               "dict/jieba.dict.utf8", ### 系统默认词库
-##               "dict/hmm_model.utf8",  ### HMM模型数据
-##               "dict/user.dict.utf8")  ### 用户自定义词库
+##       初始化分词( "混合",
+##                   "dict/jieba.dict.utf8", ### 系统默认词库
+##                   "dict/hmm_model.utf8",  ### HMM模型数据
+##                   "dict/user.dict.utf8")  ### 用户自定义词库
 
 ##  不能写成下面的形式，因为 Julia 的参数匹配是严格按照位置和类型匹配的，和 R 不同 ：
 ##       worker( "mix",
@@ -54,10 +60,10 @@ cutter = worker()
 ##               dict = "dict/user.dict.utf8")  ### 错误的参数
 ```
 
-可以使用`segment()`函数，或者`<=`运算符号进行分词，julia.jl中未实现`[`分词符号。
+可以使用`segment()` `分词()` 函数，或者`<=`运算符号进行分词，julia.jl中未实现`[`分词符号。
 
 ```julia
-cutter <= "江州市长江大桥参加了长江大桥的通车仪式"   ### <= 分词运算符
+测试引擎 <= "江州市长江大桥参加了长江大桥的通车仪式"   ### <= 分词运算符
 ```
 
 ```julia
@@ -76,28 +82,28 @@ cutter <= "江州市长江大桥参加了长江大桥的通车仪式"   ### <= �
 支持对文件进行分词：
 
 ```julia
-cutter <= "./temp.dat"  ### 自动判断输入文件编码模式，默认文件输出在同目录下。
+测试引擎 <= "./temp.dat"  ### 自动判断输入文件编码模式，默认文件输出在同目录下。
 
-## segment( "./temp.dat" , mixseg )
+## segment( "./temp.dat" , cutter )
 ```
 
 在加载分词引擎时，可以自定义词库路径，同时可以启动不同的引擎，因为 Julia 的函数参数匹配方式与 R 不同，建议使用下面的函数初始化化分词引擎：
 
 ```julia
 
-mix_worker( DICTPATH, HMMPATH, USERPATH )
+mix_worker( DICTPATH, HMMPATH, USERPATH ) #混合引擎()
 
-hmm_worker( HMMPATH )
+hmm_worker( HMMPATH )                     #hmm引擎()
 
-mp_worker( DICTPATH , USERPATH )
+mp_worker( DICTPATH , USERPATH )          #概率引擎()
 
-query_worker( DICTPATH , HMMPATH , 20 )
+query_worker( DICTPATH , HMMPATH , 20 )   #索引引擎()
 
-tag_worker( DICTPATH , HMMPATH , USERPATH )
+tag_worker( DICTPATH , HMMPATH , USERPATH )#标记引擎()
 
-simhash_worker( DICTPATH , HMMPATH , STOPPATH , IDFPATH , 5)
+simhash_worker( DICTPATH , HMMPATH , STOPPATH , IDFPATH , 5) #simhash引擎()
 
-keywords_worker( DICTPATH , HMMPATH , STOPPATH , IDFPATH , 5)
+keywords_worker( DICTPATH , HMMPATH , STOPPATH , IDFPATH , 5) #关键词引擎()
 
 ```
 
@@ -111,12 +117,14 @@ Julia.jl 提供了四种分词模式：
 
 索引模型（QuerySegment）先使用混合模型进行切词，再对于切出来的较长的词，枚举句子中所有可能成词的情况，找出词库里存在。
 
-可以通过`.` 符号重设一些`worker`的参数设置，如 ` WorkerName.symbol = T `，在输出中保留标点符号。一些参数在初始化的时候已经确定，无法修改， 可以通过`WorkerName.private`来获得这些信息。
+可以通过`.` 符号重设一些`worker`的参数设置，如 ` WorkerName.symbol = true ` ` 引擎名.保留符号 = true `，在输出中保留标点符号。一些参数在初始化的时候已经确定，无法修改， 可以通过`WorkerName.private` `引擎名.固定元素`来获得这些信息。
 
 ```julia
 cutter.encoding
+测试引擎.编码
 
 cutter.detect = false
+测试引擎.保留符号 = false
 ```
 
 可以自定义用户词库，推荐使用[深蓝词库转换]构建分词词库，它可以快速地将搜狗细胞词库等输入法词库转换为 Jieba.jl 的词库格式。
@@ -132,7 +140,7 @@ cutter.detect = false
 
 ```julia
 words  = "我爱北京天安门"
-tagworker = worker("tag")
+tagworker = worker("tag") # 测试引擎 = 初始化引擎("标记")
 tagworker <= words
 ```
 
@@ -148,12 +156,12 @@ tagworker <= words
 关键词提取所使用逆向文件频率（IDF）文本语料库可以切换成自定义语料库的路径，使用方法与分词类似。`topn`参数为关键词的个数。
 
 ```julia
-keys = worker("keywords")
-keys.topn = 2
+keys = worker("keywords") # 测试引擎 = 初始化引擎("关键词")
+keys.topn = 2  # 测试引擎.关键词数 = 2 
 ```
 
 ```julia
-julia> keys.topn
+julia> keys.topn  # 测试引擎.关键词数
 2
 ```
 
@@ -171,8 +179,8 @@ keys <= "我爱北京天安门"
 对中文文档计算出对应的simhash值。simhash是谷歌用来进行文本去重的算法，现在广泛应用在文本处理中。Simhash引擎先进行分词和关键词提取，后计算Simhash值和海明距离，返回的类型为多元组。
 
 ```julia
-simhasher = worker("simhash")
-simhasher.topn = 2
+simhasher = worker("simhash") # 测试引擎 = 初始化引擎("simhash")
+simhasher.topn = 2 # 测试引擎.关键词数 = 2 
 simhasher <= "江州市长江大桥参加了长江大桥的通车仪式"
 ```
 
@@ -187,7 +195,7 @@ simhasher <= "江州市长江大桥参加了长江大桥的通车仪式"
 ```
 
 ```julia
-distance("江州市长江大桥参加了长江大桥的通车仪式" , "hello world!", simhasher)
+distance("江州市长江大桥参加了长江大桥的通车仪式" , "hello world!", simhasher) #海明距离(.....)
 ```
 
 ```julia
@@ -206,7 +214,7 @@ distance("江州市长江大桥参加了长江大桥的通车仪式" , "hello wo
 ```
 ### 删除引擎
 
-Julia 目前无法像 R 一样 `rm（）` 对象，只能将较大的对象用较小的对象替换。如果需要删除引擎，可以使用 `delete_worker（）` 函数。通过 `show(Jieba.workerlist)` 可以获得所有初始化的引擎。
+Julia 目前无法像 R 一样 `rm（）` 对象，只能将较大的对象用较小的对象替换。如果需要删除引擎，可以使用 `delete_worker（）` `删除引擎（）` 函数。通过 `show(Jieba.workerlist)` `show(Jieba.引擎列表)`可以获得所有初始化的引擎。
 
 ## 计划支持
 
