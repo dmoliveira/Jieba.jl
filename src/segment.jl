@@ -42,6 +42,7 @@ function cut_segment_lines(code::String,engine::SegmentWorker,FILESMODE::Bool,ou
 	    end
 	    OUT = true
 	    print("Output file: $output")
+	    return output
 
     else 
     	FILESMODE = false

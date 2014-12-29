@@ -45,6 +45,7 @@ function tag_标记_lines(code::String,engine::结巴分词,FILESMODE::Bool,outp
 	    end
 	    OUT = true
 	    print("输出路径: $output")
+	    return output
 
     else 
     	FILESMODE = false

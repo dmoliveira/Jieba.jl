@@ -42,6 +42,7 @@ function cut_分词_lines(code::String,engine::结巴分词,FILESMODE::Bool,outp
 	    end
 	    OUT = true
 	    print("输出文件: $output")
+	    return output
 
     else 
     	FILESMODE = false
