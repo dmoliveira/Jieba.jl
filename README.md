@@ -1,6 +1,6 @@
 # Jieba.jl
 
-[![Build Status](https://travis-ci.org/qinwf/Jieba.jl.svg)](https://travis-ci.org/qinwf/Jieba.jl)
+Linux : [![Build Status](https://travis-ci.org/qinwf/jiebaR.svg?branch=master)](https://travis-ci.org/qinwf/jiebaR)　Mac : [![Build Status](https://travis-ci.org/qinwf/Jieba.jl.svg?branch=osx)](https://travis-ci.org/qinwf/Jieba.jl)　Windows : [![Build status](https://ci.appveyor.com/api/projects/status/4bqwdhxp91a18k4t/branch/master?svg=true)](https://ci.appveyor.com/project/qinwf/jieba-jl/branch/master)
 
 This is a package for Chinese text segmentation, keyword extraction 
 and speech tagging. It also shows how to use C++ library in Julia without other packages.
