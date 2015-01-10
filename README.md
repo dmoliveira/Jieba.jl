@@ -48,18 +48,6 @@ using Jieba
 
 测试引擎 = 初始化分词()
 #cutter = worker()
-
-##  相当于：
-##       初始化分词( "混合",
-##                   "dict/jieba.dict.utf8", ### 系统默认词库
-##                   "dict/hmm_model.utf8",  ### HMM模型数据
-##                   "dict/user.dict.utf8")  ### 用户自定义词库
-
-##  不能写成下面的形式，因为 Julia 的参数匹配是严格按照位置和类型匹配的，和 R 不同 ：
-##       worker( "mix",
-##               dict = "dict/jieba.dict.utf8", ### 错误的参数
-##               hmm  = "dict/hmm_model.utf8",  ### 错误的参数
-##               dict = "dict/user.dict.utf8")  ### 错误的参数
 ```
 
 可以使用`segment()` `分词()` 函数，或者`<=`运算符号进行分词，julia.jl中未实现`[`分词符号。
@@ -89,23 +77,16 @@ using Jieba
 ## segment( "./temp.dat" , cutter )
 ```
 
-在加载分词引擎时，可以自定义词库路径，同时可以启动不同的引擎，因为 Julia 的函数参数匹配方式与 R 不同，建议使用下面的函数初始化化分词引擎：
+在加载分词引擎时，可以自定义词库路径，同时可以启动不同的引擎，不需要写完所有参数，提供与默认参数不同的参数即可：
 
 ```julia
 
-mix_worker( DICTPATH, HMMPATH, USERPATH ) #混合引擎()
+分词初始化(引擎类型= "混合", 默认编码 = "UTF-8",读取行数 = 1000000, 检查编码 = true, 保留符号 = false,
+           输出路径 = " ", 写入文件 = true, 关键词数 = 5, dict = DICTPATH,hmm = HMMPATH,user = USERPATH,
+           最大索引长度 = 20, stop_words = STOPPATH, idf = IDFPATH) 
 
-hmm_worker( HMMPATH )                     #hmm引擎()
-
-mp_worker( DICTPATH , USERPATH )          #概率引擎()
-
-query_worker( DICTPATH , HMMPATH , 20 )   #索引引擎()
-
-tag_worker( DICTPATH , HMMPATH , USERPATH )#标记引擎()
-
-simhash_worker( DICTPATH , HMMPATH , STOPPATH , IDFPATH , 5) #simhash引擎()
-
-keywords_worker( DICTPATH , HMMPATH , STOPPATH , IDFPATH , 5) #关键词引擎()
+worker( worker_type = "mix", encoding = "UTF-8", lines = 100000, output = " ", detect = true, symbol = false,
+        write_file = true, topn =5,dict = DICTPATH, hmm = HMMPATH, user = USERPATH, qmax = 20, stop_words = STOPPATH, idf = IDFPATH)
 
 ```
 
@@ -291,19 +272,12 @@ The package uses initialized engines for word segmentation. You
 can initialize multiple engines simultaneously.
 
 ```r
-mix_worker( DICTPATH, HMMPATH, USERPATH )
+分词初始化(引擎类型= "混合", 默认编码 = "UTF-8",读取行数 = 1000000, 检查编码 = true, 保留符号 = false,
+           输出路径 = " ", 写入文件 = true, 关键词数 = 5, dict = DICTPATH,hmm = HMMPATH,user = USERPATH,
+           最大索引长度 = 20, stop_words = STOPPATH, idf = IDFPATH) 
 
-hmm_worker( HMMPATH )
-
-mp_worker( DICTPATH , USERPATH )
-
-query_worker( DICTPATH , HMMPATH , 20 )
-
-tag_worker( DICTPATH , HMMPATH , USERPATH )
-
-simhash_worker( DICTPATH , HMMPATH , STOPPATH , IDFPATH , 5)
-
-keywords_worker( DICTPATH , HMMPATH , STOPPATH , IDFPATH , 5)
+worker( worker_type = "mix", encoding = "UTF-8", lines = 100000, output = " ", detect = true, symbol = false,
+        write_file = true, topn =5,dict = DICTPATH, hmm = HMMPATH, user = USERPATH, qmax = 20, stop_words = STOPPATH, idf = IDFPATH)
 ```
 
 The model public settings can be modified and got using `.` , such as ` WorkerName.symbol = true`. Some private settings are fixed when the engine is initialized, and you can get them by `WorkerName.private`.

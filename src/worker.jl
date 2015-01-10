@@ -130,8 +130,8 @@ end
 global workerlist = Array(Union(SegmentWorker,Nothing),0)
 global workernum = 1
 
-function worker(worker_type = "mix", dict = DICTPATH,hmm = HMMPATH,user = USERPATH,
-                qmax = 20, stop_words = STOPPATH, idf = IDFPATH,workernum=workernum,workerlist=workerlist)
+function worker(;worker_type = "mix", encoding = "UTF-8", lines = 100000,output = " ",detect = true, symbol = false,write_file = true, topn =5,dict = DICTPATH,hmm = HMMPATH,user = USERPATH,
+                qmax = 20, stop_words = STOPPATH, idf = IDFPATH,workernum=Jieba.workernum,workerlist=Jieba.workerlist)
     const _worker_immupart = SegmentWorker_immupart(
       
       if worker_type == "mix"
@@ -156,14 +156,14 @@ function worker(worker_type = "mix", dict = DICTPATH,hmm = HMMPATH,user = USERPA
       ccall(sim_engine_key,Ptr{Void},(Ptr{Uint8},Ptr{Uint8},Ptr{Uint8},Ptr{Uint8}),
       pointer(dict),pointer(hmm),pointer(idf),pointer(stop_words))
       end
-      ,dict,hmm,user,20,stop_words,idf,worker_type,workernum
+      ,dict,hmm,user,qmax,stop_words,idf,worker_type,workernum
       )
     eval(quote
     	 global workernum = $workernum + 1
          end
     )
     
-    const _worker::Union(SegmentWorker,Nothing) = SegmentWorker(_worker_immupart,"UTF-8",true,false,100000," ",true,5,false)
+    const _worker::Union(SegmentWorker,Nothing) = SegmentWorker(_worker_immupart,encoding,detect,symbol,lines,output,write_file,topn,false)
 
     push!(workerlist,_worker)
     return _worker
@@ -193,3 +193,18 @@ function delete_worker(engine::Union(SegmentWorker,Nothing))
     workerlist[engine.private.num] = nothing
 end
 
+eval(Main, :(function workspace()
+	               if Jieba.workernum > 1
+	                   for num in 1:(Jieba.workernum - 1)
+	                   Jieba.delete_worker(Jieba.workerlist[num])
+	                   end
+                   end
+                   if Jieba.引擎计数 > 1
+	                   for num in 1:(Jieba.引擎计数 - 1)
+	                   Jieba.删除引擎(Jieba.引擎列表[num])
+	                   end
+                   end                   
+	            Base.workspace()
+	         end
+	               )
+)

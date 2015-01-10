@@ -6,9 +6,6 @@ include("loadlib.jl")
 include("worker.jl")
 include("worker-cn.jl")
 
-include("worker_type.jl")
-include("worker_type-cn.jl")
-
 include("detect.jl")
 
 include("segment.jl")

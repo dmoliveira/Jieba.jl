@@ -131,8 +131,9 @@ end
 global 引擎列表 = Array(Union(结巴分词,Nothing),0)
 global 引擎计数 = 1
 
-function 分词初始化(引擎类型= "混合", dict = DICTPATH,hmm = HMMPATH,user = USERPATH,
-                qmax = 20, stop_words = STOPPATH, idf = IDFPATH,引擎计数=引擎计数,引擎列表=引擎列表)
+function 分词初始化(;引擎类型= "混合", 默认编码 = "UTF-8",读取行数 = 1000000, 检查编码 = true, 保留符号 = false,输出路径 = " ", 
+                写入文件 = true, 关键词数 = 5, dict = DICTPATH,hmm = HMMPATH,user = USERPATH,
+                最大索引长度 = 20, stop_words = STOPPATH, idf = IDFPATH,引擎计数=Jieba.引擎计数,引擎列表=Jieba.引擎列表)
     const _worker_immupart = 结巴分词固定元素(
       
       if 引擎类型== "混合"
@@ -146,7 +147,7 @@ function 分词初始化(引擎类型= "混合", dict = DICTPATH,hmm = HMMPATH,u
       pointer(hmm))
       elseif 引擎类型== "索引"
       ccall(qu_engine_key,Ptr{Void},(Ptr{Uint8},Ptr{Uint8},Int),
-      pointer(dict),pointer(hmm),qmax)
+      pointer(dict),pointer(hmm),最大索引长度)
       elseif 引擎类型== "标记"
       ccall(tag_engine_key,Ptr{Void},(Ptr{Uint8},Ptr{Uint8},Ptr{Uint8}),
       pointer(dict),pointer(hmm),pointer(user))
@@ -157,14 +158,14 @@ function 分词初始化(引擎类型= "混合", dict = DICTPATH,hmm = HMMPATH,u
       ccall(sim_engine_key,Ptr{Void},(Ptr{Uint8},Ptr{Uint8},Ptr{Uint8},Ptr{Uint8}),
       pointer(dict),pointer(hmm),pointer(idf),pointer(stop_words))
       end
-      ,dict,hmm,user,20,stop_words,idf,引擎类型,引擎计数
+      ,dict,hmm,user,最大索引长度,stop_words,idf,引擎类型,引擎计数
       )
     eval(quote
     	 global 引擎计数 = $引擎计数 + 1
          end
     )
     
-    const _worker::Union(结巴分词,Nothing) = 结巴分词(_worker_immupart,"UTF-8",true,false,100000," ",true,5,false)
+    const _worker::Union(结巴分词,Nothing) = 结巴分词(_worker_immupart,默认编码,检查编码,保留符号,读取行数,输出路径,写入文件,关键词数,false)
 
     push!(引擎列表,_worker)
     return _worker
