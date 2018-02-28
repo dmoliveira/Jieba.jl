@@ -228,7 +228,8 @@ types of segmentation modes: Maximum Probability, Hidden Markov Model, Query Seg
 Install the latest development version from GitHub:
 
 ```julia
-Pkg.clone("git://github.com/qinwf/Jieba.jl.git")
+Pkg.clone("https://github.com/seekasia/JiebaData.jl.git")
+Pkg.clone("https://github.com/seekasia/Jieba.jl.git")
 Pkg.build("Jieba")
 
 using Jieba
