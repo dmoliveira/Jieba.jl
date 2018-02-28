@@ -101,11 +101,11 @@ function cut_segment_words(code::String,engine::SegmentWorker,FILESMODE::Bool)
     sz = ccall(get_vector_size_key,UInt32,(Ptr{Void},),tempvector)
     res = ccall(result_key,Ptr{Ptr{UInt8}},(Ptr{Void},),tempvector)
 
-    temparray = pointer_to_array(res,sz)
-    result =  Array(UTF8String,sz)
+    temparray = unsafe_wrap(Array,res,sz)
+    result =  Array(String, length(temparray))
     
     for num in 1:sz 
-          result[num] = bytestring(temparray[num])
+          result[num] = unsafe_string(temparray[num])
     end
 
     ccall(free_basev_key,Void,(Ptr{Void},),tempvector)
