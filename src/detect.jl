@@ -4,7 +4,7 @@ export transcode
 
 
 function filecoding(filepath)
-    encoding_p = ccall(detect_enc_key,Ptr{Uint8},(Ptr{Uint8},),pointer(filepath))
+    encoding_p = ccall(detect_enc_key,Ptr{UInt8},(Ptr{UInt8},),pointer(filepath))
     encoding = bytestring(encoding_p)
     return encoding
 end # segment()

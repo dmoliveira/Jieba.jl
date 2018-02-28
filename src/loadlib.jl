@@ -2,7 +2,10 @@
 export DICTPATH 
 export HMMPATH
 export USERPATH
-export libdemo 
+export libdemo
+
+import Base.Libdl.dlopen
+import Base.Libdl.dlsym 
 
 fnames = ["libdemo.so", "libdemo.dylib", "libdemo.dll"]
 paths = [pwd(), joinpath(Pkg.dir(), "Jieba", "deps")]

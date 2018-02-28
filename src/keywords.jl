@@ -33,10 +33,10 @@ function key_segment_words(code::String,engine::SegmentWorker)
 		code = replace(code,r"[^\u2e80-\u3000\u3021-\ufe4fa-zA-Z0-9]", " ")
     end
     topn = copy(engine.topn)
-    tempvector = ccall(key_vector_num_result_key,Ptr{Void},(Ptr{Void},Ptr{Uint8},Int),engine.private.worker,pointer(code),topn)
+    tempvector = ccall(key_vector_num_result_key,Ptr{Void},(Ptr{Void},Ptr{UInt8},Int),engine.private.worker,pointer(code),topn)
     
-    sz = ccall(get_vector_num_size_key,Uint32,(Ptr{Void},),tempvector)
-    res_char = ccall(keyword_char_key,Ptr{Ptr{Uint8}},(Ptr{Void},),tempvector)
+    sz = ccall(get_vector_num_size_key,UInt32,(Ptr{Void},),tempvector)
+    res_char = ccall(keyword_char_key,Ptr{Ptr{UInt8}},(Ptr{Void},),tempvector)
     res_num  = ccall(keyword_num_key,Ptr{Float64},(Ptr{Void},),tempvector)
 
     temparray_char = pointer_to_array(res_char,sz)
@@ -50,7 +50,7 @@ function key_segment_words(code::String,engine::SegmentWorker)
     end
 
     ccall(free_vector_num_base_key,Void,(Ptr{Void},),tempvector)
-    ccall(free_char_key,Void,(Ptr{Ptr{Uint8}},),res_char)
+    ccall(free_char_key,Void,(Ptr{Ptr{UInt8}},),res_char)
     ccall(free_num_p_key,Void,(Ptr{Float64},),res_num)
 
 	if engine.symbol == false

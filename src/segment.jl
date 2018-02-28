@@ -1,4 +1,4 @@
-
+import Base: <=
 export segment
 
 
@@ -89,27 +89,27 @@ function cut_segment_words(code::String,engine::SegmentWorker,FILESMODE::Bool)
     end
     
 	if engine.private.worker_type == "mix"
-    tempvector = ccall(vector_result_key,Ptr{Void},(Ptr{Void},Ptr{Uint8}),engine.private.worker,pointer(code))
+    tempvector = ccall(vector_result_key,Ptr{Void},(Ptr{Void},Ptr{UInt8}),engine.private.worker,pointer(code))
     elseif engine.private.worker_type == "mp"
-    tempvector = ccall(mp_vector_result_key,Ptr{Void},(Ptr{Void},Ptr{Uint8}),engine.private.worker,pointer(code))
+    tempvector = ccall(mp_vector_result_key,Ptr{Void},(Ptr{Void},Ptr{UInt8}),engine.private.worker,pointer(code))
     elseif engine.private.worker_type == "hmm"
-    tempvector = ccall(hmm_vector_result_key,Ptr{Void},(Ptr{Void},Ptr{Uint8}),engine.private.worker,pointer(code))
+    tempvector = ccall(hmm_vector_result_key,Ptr{Void},(Ptr{Void},Ptr{UInt8}),engine.private.worker,pointer(code))
     elseif engine.private.worker_type == "query"
-    tempvector = ccall(qu_vector_result_key,Ptr{Void},(Ptr{Void},Ptr{Uint8}),engine.private.worker,pointer(code)) 
+    tempvector = ccall(qu_vector_result_key,Ptr{Void},(Ptr{Void},Ptr{UInt8}),engine.private.worker,pointer(code)) 
     end
     
-    sz = ccall(get_vector_size_key,Uint32,(Ptr{Void},),tempvector)
-    res = ccall(result_key,Ptr{Ptr{Uint8}},(Ptr{Void},),tempvector)
+    sz = ccall(get_vector_size_key,UInt32,(Ptr{Void},),tempvector)
+    res = ccall(result_key,Ptr{Ptr{UInt8}},(Ptr{Void},),tempvector)
 
-    temparray = pointer_to_array(res,sz)
-    result =  Array(UTF8String,sz)
+    temparray = unsafe_wrap(Array,res,sz)
+    result =  Array(String, length(temparray))
     
     for num in 1:sz 
-          result[num] = bytestring(temparray[num])
+          result[num] = unsafe_string(temparray[num])
     end
 
     ccall(free_basev_key,Void,(Ptr{Void},),tempvector)
-    ccall(free_char_key,Void,(Ptr{Ptr{Uint8}},),res)
+    ccall(free_char_key,Void,(Ptr{Ptr{UInt8}},),res)
 
 	if engine.symbol == false
 		result = result[ !(result .== " ")]

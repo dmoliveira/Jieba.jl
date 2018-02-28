@@ -5,13 +5,13 @@ export delete_worker
 
 immutable SegmentWorker_immupart
     worker::Ptr{Void}
-    dict::UTF8String
-    hmm::UTF8String
-    user::UTF8String
+    dict::String
+    hmm::String
+    user::String
     qmax::Int
-    stop_words::UTF8String
-    idf::UTF8String
-    worker_type::UTF8String
+    stop_words::String
+    idf::String
+    worker_type::String
     num::Int
 end
 
@@ -69,11 +69,11 @@ end
 
 type SegmentWorker
     private::SegmentWorker_immupart
-    encoding::UTF8String
+    encoding::String
     detect::Bool
     symbol::Bool
     lines::Int
-    output::UTF8String
+    output::String
     write::Bool
     topn::Int
     freed::Bool
@@ -107,7 +107,7 @@ Base.show(io::IO,x::SegmentWorker) = begin
   println("Fix Settings    : "); println("");println(x.private);
 end
 
-Base.print(io::IO,x::Array{Union(Nothing,SegmentWorker),1}) = begin
+Base.print(io::IO,x::Array{Union{Void,SegmentWorker},1}) = begin
   if length(x) == 0
     return 
   end
@@ -117,7 +117,7 @@ Base.print(io::IO,x::Array{Union(Nothing,SegmentWorker),1}) = begin
   end
 end
 
-Base.show(io::IO,x::Array{Union(Nothing,SegmentWorker),1}) = begin
+Base.show(io::IO,x::Array{Union{Void,SegmentWorker},1}) = begin
   if length(x) == 0
     return 
   end
@@ -127,7 +127,7 @@ Base.show(io::IO,x::Array{Union(Nothing,SegmentWorker),1}) = begin
   end
 end
 
-global workerlist = Array(Union(SegmentWorker,Nothing),0)
+global workerlist = Array(Union{SegmentWorker,Void},0)
 global workernum = 1
 
 function worker(;worker_type = "mix", encoding = "UTF-8", lines = 100000,output = " ",detect = true, symbol = false,write_file = true, topn =5,dict = DICTPATH,hmm = HMMPATH,user = USERPATH,
@@ -135,25 +135,25 @@ function worker(;worker_type = "mix", encoding = "UTF-8", lines = 100000,output 
     const _worker_immupart = SegmentWorker_immupart(
       
       if worker_type == "mix"
-      ccall(mix_engine_key,Ptr{Void},(Ptr{Uint8},Ptr{Uint8},Ptr{Uint8}),
+      ccall(mix_engine_key,Ptr{Void},(Ptr{UInt8},Ptr{UInt8},Ptr{UInt8}),
             pointer(dict),pointer(hmm),pointer(user))
       elseif worker_type == "mp"
-      ccall(mp_engine_key,Ptr{Void},(Ptr{Uint8},Ptr{Uint8}),
+      ccall(mp_engine_key,Ptr{Void},(Ptr{UInt8},Ptr{UInt8}),
       pointer(dict),pointer(user))
       elseif worker_type == "hmm"
-      ccall(hmm_engine_key,Ptr{Void},(Ptr{Uint8},),
+      ccall(hmm_engine_key,Ptr{Void},(Ptr{UInt8},),
       pointer(hmm))
       elseif worker_type == "query"
-      ccall(qu_engine_key,Ptr{Void},(Ptr{Uint8},Ptr{Uint8},Int),
+      ccall(qu_engine_key,Ptr{Void},(Ptr{UInt8},Ptr{UInt8},Int),
       pointer(dict),pointer(hmm),qmax)
       elseif worker_type == "tag"
-      ccall(tag_engine_key,Ptr{Void},(Ptr{Uint8},Ptr{Uint8},Ptr{Uint8}),
+      ccall(tag_engine_key,Ptr{Void},(Ptr{UInt8},Ptr{UInt8},Ptr{UInt8}),
       pointer(dict),pointer(hmm),pointer(user))
       elseif worker_type == "keywords"
-      ccall(key_engine_key,Ptr{Void},(Ptr{Uint8},Ptr{Uint8},Ptr{Uint8},Ptr{Uint8}),
+      ccall(key_engine_key,Ptr{Void},(Ptr{UInt8},Ptr{UInt8},Ptr{UInt8},Ptr{UInt8}),
       pointer(dict),pointer(hmm),pointer(idf),pointer(stop_words))
       elseif worker_type == "simhash"
-      ccall(sim_engine_key,Ptr{Void},(Ptr{Uint8},Ptr{Uint8},Ptr{Uint8},Ptr{Uint8}),
+      ccall(sim_engine_key,Ptr{Void},(Ptr{UInt8},Ptr{UInt8},Ptr{UInt8},Ptr{UInt8}),
       pointer(dict),pointer(hmm),pointer(idf),pointer(stop_words))
       end
       ,dict,hmm,user,qmax,stop_words,idf,worker_type,workernum
@@ -163,14 +163,14 @@ function worker(;worker_type = "mix", encoding = "UTF-8", lines = 100000,output 
          end
     )
     
-    const _worker::Union(SegmentWorker,Nothing) = SegmentWorker(_worker_immupart,encoding,detect,symbol,lines,output,write_file,topn,false)
+    const _worker::Union{SegmentWorker,Void} = SegmentWorker(_worker_immupart,encoding,detect,symbol,lines,output,write_file,topn,false)
 
     push!(workerlist,_worker)
     return _worker
 end
 
 
-function delete_worker(engine::Union(SegmentWorker,Nothing))
+function delete_worker(engine::Union{SegmentWorker,Void})
 	if( engine == nothing || engine.freed == true )
 		return 
 	end

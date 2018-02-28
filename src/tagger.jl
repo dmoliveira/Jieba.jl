@@ -88,11 +88,11 @@ function tag_segment_words(code::String,engine::SegmentWorker,FILESMODE::Bool)
 		code = replace(code,r"[^\u2e80-\u3000\u3021-\ufe4fa-zA-Z0-9]", " ")
     end
     
-    tempvector = ccall(tag_vector_vector_result_key,Ptr{Void},(Ptr{Void},Ptr{Uint8}),engine.private.worker,pointer(code))
+    tempvector = ccall(tag_vector_vector_result_key,Ptr{Void},(Ptr{Void},Ptr{UInt8}),engine.private.worker,pointer(code))
     
-    sz = ccall(get_vector_vector_size_key,Uint32,(Ptr{Void},),tempvector)
-    res_char = ccall(tagger_char_key,Ptr{Ptr{Uint8}},(Ptr{Void},),tempvector)
-    res_tag  = ccall(tagger_tag_key,Ptr{Ptr{Uint8}},(Ptr{Void},),tempvector)
+    sz = ccall(get_vector_vector_size_key,UInt32,(Ptr{Void},),tempvector)
+    res_char = ccall(tagger_char_key,Ptr{Ptr{UInt8}},(Ptr{Void},),tempvector)
+    res_tag  = ccall(tagger_tag_key,Ptr{Ptr{UInt8}},(Ptr{Void},),tempvector)
 
     temparray_char = pointer_to_array(res_char,sz)
     temparray_tag = pointer_to_array(res_tag,sz)
@@ -105,8 +105,8 @@ function tag_segment_words(code::String,engine::SegmentWorker,FILESMODE::Bool)
     end
 
     ccall(free_vector_vector_base_key,Void,(Ptr{Void},),tempvector)
-    ccall(free_char_key,Void,(Ptr{Ptr{Uint8}},),res_char)
-    ccall(free_char_key,Void,(Ptr{Ptr{Uint8}},),res_tag)
+    ccall(free_char_key,Void,(Ptr{Ptr{UInt8}},),res_char)
+    ccall(free_char_key,Void,(Ptr{Ptr{UInt8}},),res_tag)
 
 	if engine.symbol == false
 		tempbool = !(result_char .== " ")
