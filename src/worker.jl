@@ -127,7 +127,7 @@ Base.show(io::IO,x::Array{Union{Void,SegmentWorker},1}) = begin
   end
 end
 
-global workerlist = Array(Union{SegmentWorker,Void},0)
+global workerlist = Array{Union{SegmentWorker,Void}}(0)
 global workernum = 1
 
 function worker(;worker_type = "mix", encoding = "UTF-8", lines = 100000,output = " ",detect = true, symbol = false,write_file = true, topn =5,dict = DICTPATH,hmm = HMMPATH,user = USERPATH,

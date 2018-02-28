@@ -14,7 +14,7 @@ function tag_segment_lines(code::String,engine::SegmentWorker,FILESMODE::Bool,ou
 	    
 	    try
 	    	while nlines == engine.lines
-	    		temparray = Array(String, engine.lines)
+	    		temparray = Array{String}(engine.lines)
 	            numlines = 0
 	    		while numlines != nlines && !eof(fileopen)
 	    		    numlines = numlines + 1
@@ -49,10 +49,10 @@ function tag_segment_lines(code::String,engine::SegmentWorker,FILESMODE::Bool,ou
 
     else 
     	FILESMODE = false
-    	result = Array(String,0)
+    	result = Array{String}(0)
     	try
 	    	while nlines == engine.lines
-	    		temparray = Array(String, engine.lines)
+	    		temparray = Array{String}(engine.lines)
 	            numlines = 0
 	    		while numlines != nlines && !eof(fileopen)
 	    		    numlines = numlines + 1
@@ -96,8 +96,8 @@ function tag_segment_words(code::String,engine::SegmentWorker,FILESMODE::Bool)
 
     temparray_char = pointer_to_array(res_char,sz)
     temparray_tag = pointer_to_array(res_tag,sz)
-    result_char =  Array(UTF8String,sz)
-    result_tag =  Array(UTF8String,sz)
+    result_char =  Array{String}(sz)
+    result_tag =  Array{String}(sz)
     
     for num in 1:sz 
           result_char[num] = bytestring(temparray_char[num])
