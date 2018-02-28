@@ -14,7 +14,7 @@ function cut_segment_lines(code::String,engine::SegmentWorker,FILESMODE::Bool,ou
 	    
 	    try
 	    	while nlines == engine.lines
-	    		temparray = Array(String, engine.lines)
+	    		temparray = Array{String}(engine.lines)
 	            numlines = 0
 	    		while numlines != nlines && !eof(fileopen)
 	    		    numlines = numlines + 1
@@ -46,10 +46,10 @@ function cut_segment_lines(code::String,engine::SegmentWorker,FILESMODE::Bool,ou
 
     else 
     	FILESMODE = false
-    	result = Array(String,0)
+    	result = Array{String}(0)
     	try
 	    	while nlines == engine.lines
-	    		temparray = Array(String, engine.lines)
+	    		temparray = Array{String}(engine.lines)
 	            numlines = 0
 	    		while numlines != nlines && !eof(fileopen)
 	    		    numlines = numlines + 1
@@ -102,7 +102,7 @@ function cut_segment_words(code::String,engine::SegmentWorker,FILESMODE::Bool)
     res = ccall(result_key,Ptr{Ptr{UInt8}},(Ptr{Void},),tempvector)
 
     temparray = unsafe_wrap(Array,res,sz)
-    result =  Array(String, length(temparray))
+    result =  Array{String}(length(temparray))
     
     for num in 1:sz 
           result[num] = unsafe_string(temparray[num])
@@ -112,7 +112,7 @@ function cut_segment_words(code::String,engine::SegmentWorker,FILESMODE::Bool)
     ccall(free_char_key,Void,(Ptr{Ptr{UInt8}},),res)
 
 	if engine.symbol == false
-		result = result[ !(result .== " ")]
+		result = result[ .!(result .== " ")]
     end
 
     return result
