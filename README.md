@@ -29,8 +29,8 @@ Jieba.jl 的使用方法与 jiebaR 类似，如果你熟悉 jiebaR，应该可�
 可以通过Github安装,系统需要安装 gcc >= 4.6 或 Clang 编译包。在Windows 下请不要使用 Rtools 下的 MinGW，请使用 JuliaLang 官方推荐的 MinGW 版本：
 
 ```julia
-Pkg.clone("git://github.com/qinwf/JiebaData.jl.git")
-Pkg.clone("git://github.com/qinwf/Jieba.jl.git")
+Pkg.clone("https://github.com/seekasia/JiebaData.jl.git")
+Pkg.clone("https://github.com/seekasia/Jieba.jl.git")
 Pkg.build("Jieba")
 
 using Jieba
