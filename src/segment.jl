@@ -1,5 +1,6 @@
 import Base: <=
 export segment
+export segment_text
 
 
 function cut_segment_lines(code::String,engine::SegmentWorker,FILESMODE::Bool,output)
@@ -118,6 +119,9 @@ function cut_segment_words(code::String,engine::SegmentWorker,FILESMODE::Bool)
     return result
 end # cut_words
 
+function segment_text(code::String,engine::SegmentWorker)
+    return cut_segment_words(code,engine,false)
+end
 
 function segment(code::String,engine::SegmentWorker)
     if isfile(code) 
