@@ -89,12 +89,14 @@ const simhasher_res_key = dlsym(libkey,:simhasher_res)
 const distance_key = dlsym(libkey,:distance)
 
 
+# Get the 'deps' directory path
+const deps_path = dirname(libname)
 
-DICTPATH = joinpath(Pkg.dir(), "Jieba","deps", "dict", "jieba.dict.utf8")
-HMMPATH  = joinpath(Pkg.dir(), "Jieba","deps", "dict", "hmm_model.utf8")
-USERPATH = joinpath(Pkg.dir(), "Jieba","deps", "dict", "user.dict.utf8")
-STOPPATH  = joinpath(Pkg.dir(), "Jieba","deps", "dict", "stop_words.utf8")
-IDFPATH = joinpath(Pkg.dir(), "Jieba","deps", "dict", "idf.utf8")
+DICTPATH = joinpath(deps_path, "dict", "jieba.dict.utf8")
+HMMPATH  = joinpath(deps_path, "dict", "hmm_model.utf8")
+USERPATH = joinpath(deps_path, "dict", "user.dict.utf8")
+STOPPATH  = joinpath(deps_path, "dict", "stop_words.utf8")
+IDFPATH = joinpath(deps_path, "dict", "idf.utf8")
 
 if !isfile(DICTPATH)
     error("Can not find system dictionary.")
