@@ -9,6 +9,7 @@ import Base.Libdl.dlsym
 
 fnames = ["libdemo.so", "libdemo.dylib", "libdemo.dll"]
 paths = [pwd(), joinpath(Pkg.dir(), "Jieba", "deps")]
+append!(paths, [joinpath(dir, "Jieba", "deps") for dir in Base.LOAD_PATH])
 global libname
 found = false
 for path in paths
