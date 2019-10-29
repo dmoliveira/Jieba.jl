@@ -1,5 +1,6 @@
 module Jieba
 
+using Libdl
 
 include("loadlib.jl")
 
