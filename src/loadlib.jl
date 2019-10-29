@@ -6,6 +6,7 @@ export libdemo
 
 import Base.Libdl.dlopen
 import Base.Libdl.dlsym 
+import Libdl
 
 fnames = ["libdemo.so", "libdemo.dylib", "libdemo.dll"]
 paths = [pwd(), joinpath(Pkg.dir(), "Jieba", "deps")]
