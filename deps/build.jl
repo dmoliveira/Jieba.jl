@@ -1,1 +1,2 @@
+using Libdl
 run(`make`)
